@@ -1,9 +1,11 @@
 Gestión de Stock para Negocios 🛒📦
 
-📌 Descripción
+📌 Descripción:
+
 Este es un software de escritorio desarrollado en Python con Tkinter y SQLite, diseñado para ayudar a negocios y empresas a gestionar su stock de productos, consultar precios, registrar proveedores y llevar un control eficiente de su inventario.
 
-🚀 Características principales
+🚀 Características principales:
+
 ✅ Gestión de stock: Agregar, editar y eliminar productos fácilmente.
 ✅ Consulta de precios y stock: Buscar productos y verificar disponibilidad.
 ✅ Registro de proveedores: Guardar información detallada de proveedores.
@@ -16,3 +18,5 @@ Este es un software de escritorio desarrollado en Python con Tkinter y SQLite, d
 Python 3
 Tkinter + ttkbootstrap 🎨 (para la interfaz gráfica)
 SQLite 🗄️ (para la base de datos)
+
+APP EN PROCESO
