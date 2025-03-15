@@ -20,7 +20,7 @@ class Manager(Tk):
             frame = i(contenedor, self)
             self.frames[i] = frame
             
-        self.show_frame(Registro)
+        self.show_frame(Login)
         
         self.style = ttk.Style()
         self.style.theme_use("clam")
