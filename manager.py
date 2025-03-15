@@ -1,6 +1,6 @@
 from tkinter import * 
 from tkinter import ttk
-from login import Login, Registro
+from modulos.login import Login, Registro
 from contenedor import Container
 import sys
 import os
@@ -20,7 +20,7 @@ class Manager(Tk):
             frame = i(contenedor, self)
             self.frames[i] = frame
             
-        self.show_frame(Container)
+        self.show_frame(Registro)
         
         self.style = ttk.Style()
         self.style.theme_use("clam")
