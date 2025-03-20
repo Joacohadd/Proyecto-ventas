@@ -69,6 +69,12 @@ class Login(tk.Frame):
         frame_recuadro = tk.Frame(self, bg="gray", highlightbackground="black", highlightthickness="1")
         frame_recuadro.place(x=350, y=70, width=400, height=560)
         
+        self.logo_img = Image.open("imagenes/logo_gen.png")
+        self.logo_img = self.logo_img.resize((200, 200))
+        self.logo_img = ImageTk.PhotoImage(self.logo_img)
+        self.logo_label = ttk.Label(frame_recuadro, image=self.logo_img, background="gray")
+        self.logo_label.place(x=100, y=20)
+        
         user = ttk.Label(frame_recuadro, text="Nombre de usuario", font="arial 16 bold", background="#FFFFFF")
         user.place(x=100, y=250)
         self.user_name = ttk.Entry(frame_recuadro, font="arial 16 bold")
@@ -155,6 +161,12 @@ class Registro(tk.Frame):
         #INICIO SESION
         frame_recuadro = tk.Frame(self, bg="gray", highlightbackground="black", highlightthickness="1")
         frame_recuadro.place(x=350, y=10, width=400, height=630)
+        
+        self.logo_img = Image.open("imagenes/logo_gen.png")
+        self.logo_img = self.logo_img.resize((200, 200))
+        self.logo_img = ImageTk.PhotoImage(self.logo_img)
+        self.logo_label = ttk.Label(frame_recuadro, image=self.logo_img, background="gray")
+        self.logo_label.place(x=100, y=20)
         
         user = ttk.Label(frame_recuadro, text="Nombre de usuario", font="arial 16 bold", background="#FFFFFF")
         user.place(x=100, y=250)
