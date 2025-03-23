@@ -193,11 +193,9 @@ class Inventario(tk.Frame):
         boton_cancelar_art.place(x=260, y=260, width=150, height=40)
     
     def cargar_articulos(self, filtro = None, categoria = None):
-        print("📢 Función cargar_articulos ejecutada")
         self.after(0, self._cargar_articulos, filtro, categoria)
     
     def _cargar_articulos(self, filtro=None, categoria=None):
-        print("📢 Función _cargar_articulos ejecutada")
 
         try:
             for widget in self.scrollable_frame.winfo_children():
@@ -210,18 +208,15 @@ class Inventario(tk.Frame):
                 query += " WHERE articulo LIKE ?"
                 params.append(f'%{filtro}%')
 
-            print(f"📝 Ejecutando consulta SQL: {query} con parámetros: {params}")
 
             self.cur.execute(query, params)
             articulos = self.cur.fetchall()
 
-            print(f"🔍 Artículos obtenidos: {articulos}")
 
             self.row = 0
             self.column = 0
 
             for articulo, precio, image_path in articulos:
-                print(f"📂 Llamando a mostrar_articulo con: {articulo}, {precio}, {image_path}")
                 self.mostrar_articulo(articulo, precio, image_path)
 
         except Exception as e:
@@ -229,11 +224,10 @@ class Inventario(tk.Frame):
     
     
     def mostrar_articulo(self, articulo, precio, image_path):
-        print(f"📢 Función mostrar_articulo ejecutada con: {articulo}, {precio}, {image_path}")
+        
         article_frame = tk.Frame(self.scrollable_frame, bg="white", relief="solid")
         article_frame.grid(row=self.row, column=self.column, padx=10, pady=10)
 
-        print(f"Artículo: {articulo}, Imagen: {image_path}")
         if image_path and os.path.exists(image_path):
             image = Image.open(image_path)
             image = image.resize((150, 150), Image.LANCZOS)
@@ -276,9 +270,9 @@ class Inventario(tk.Frame):
                 
                 #CAMBIA DE COLOR SEGUN EL ESTADO
                 self.label_select_4.config(text=f"Estado: {estado}")
-                if estado.lower() == "Active":
+                if estado.lower() == "active":
                     self.label_select_4.config(fg="green")
-                elif estado.lower() == "Inactivo":
+                elif estado.lower() == "inactivo":
                     self.label_select_4.config(fg="red")
                 else:
                     self.label_select_4.config(fg="black")
