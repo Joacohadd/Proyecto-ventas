@@ -270,6 +270,7 @@ class Inventario(tk.Frame):
                 
                 #CAMBIA DE COLOR SEGUN EL ESTADO
                 self.label_select_4.config(text=f"Estado: {estado}")
+                
                 if estado.lower() == "active":
                     self.label_select_4.config(fg="green")
                 elif estado.lower() == "inactivo":

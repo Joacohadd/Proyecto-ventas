@@ -1,12 +1,101 @@
 from tkinter import * 
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+import sqlite3
 
 class Ventas(tk.Frame):
+    db_name = "database.db"
+    
     def __init__(self, padre):
         super().__init__(padre)
+        self.numero_factura = self.obtener_numero_factura_actual()
         self.widgets()
+        self.cargar_productos()
     
+    def obtener_numero_factura_actual(self):
+        #BASE DE DATOS
+        try:
+            conn = sqlite3.connect(self.db_name)
+            c = conn.cursor()
+            c.execute("SELECT MAX(factura) FROM ventas") # Obtiene el número de factura más alto de la tabla 'ventas'
+            last_invoice_number = c.fetchone()[0] # Extrae el número de factura máximo del resultado
+            conn.close() # Cierra la conexión a la base de datos
+            # Devuelve el siguiente número de factura, o 1 si no hay facturas
+            return last_invoice_number + 1 if last_invoice_number is not None else 1 
+        except sqlite3.Error as e:
+            print("Error obteniendo el numero de factura actual", e)
+            return 1
+    
+    def cargar_productos(self):
+        try:
+            conn = sqlite3.connect(self.db_name)
+            c = conn.cursor()
+            c.execute("SELECT articulo FROM articulos")
+            #Crea una lista que contiene el primer elemento de cada tupla de la base de datos.
+            self.products = [product[0] for product in c.fetchall()]
+            self.entry_producto["values"] = self.products
+            conn.close()
+        except sqlite3.Error as e:
+            print("Error cargando productos: ", e)
+    
+    def agregar_articulo(self):
+        cliente = self.entry_cliente.get()
+        producto = self.entry_producto.get()
+        cantidad = self.entry_cantidad.get()
+        
+        if not cliente:
+            messagebox.showerror("Error", "Por favor seleccione un cliente.")
+            
+        if not producto:
+            messagebox.showerror("Error", "Por favor seleccione un producto.")
+            
+        if not cantidad.isdigit() or int(cantidad) < 1:
+            messagebox.showerror("Error", "Por favor ingrese una cantidad valida.")
+            return
+
+        cantidad = int(cantidad)
+        # Obtiene el valor ingresado en 'self.entry_cliente' y lo asigna a la variable 'cliente'.
+        cliente = self.entry_cliente.get()
+        
+        try:
+            conn = sqlite3.connect(self.db_name)
+            c = conn.cursor()
+            # Ejecuta una consulta que selecciona las columnas 'precio' y 'stock' de la tabla 'articulos' donde la columna 'articulo' coincide con el valor de la variable 'producto'
+            c.execute("SELECT precio, stock FROM articulos WHERE articulo=?", (producto,))
+            resultado = c.fetchone()
+            
+            if resultado is None:
+                messagebox.showerror("Error", "Producto no encontrado")
+                producto
+                
+            precio, stock = resultado
+            
+            #LO QUE VENDO TIENE QUE SER MENOR A LO QUE HAY EN STOCK
+            if cantidad > stock:
+                messagebox.showerror("Error", f"Stock insuficiente, solo hay {stock} unidades")
+            
+            total = precio * cantidad
+            #El .0f para que no haya decimales
+            total_cop = "{:,.0f}".format(total)    
+            
+            self.tre.insert("", "end", values=(self.numero_factura, cliente, producto, "{:,.0f}".format(precio), cantidad, total_cop))
+            self.productos_seleccionados.append((self.numero_factura), cliente, producto, precio, cantidad, total_cop)
+            
+            conn.close()
+            #RESETEA EL COMBOBOX PARA QUE NO QUEDE ESCRITO EL PRODUCTO
+            self.entry_producto.set('')
+            self.entry_cantidad.delete(0, 'end')
+        except sqlite3.Error as e:
+            print("Error al agregar articulo")
+        
+        self.calcular_precio_total()
+    
+    def calcular_precio_total(self):
+        total_pagar = sum(float(self.tre.item(item)["values"][-1].replace(" ", "").replace(",", " "))for item in self.tre.get_children())
+        
+        total_pagar_cop = "{:,.0f}".format(total_pagar)
+        self.label_precio_total.config(text=f"Precio a pagar: $ {total_pagar_cop}")
+
     def widgets(self):
         #PRIMER RECTANGULO
         label_frame = tk.LabelFrame(self, font="sans 12 bold", bg="gray")
@@ -36,6 +125,9 @@ class Ventas(tk.Frame):
         #FACTURA COMPRA
         label_factura = tk.Label(label_frame, text="Factura", font="sans 14 bold", bg="gray")
         label_factura.place(x=750, y=11)
+        
+        self.label_numero_factura = tk.Label(label_frame, text=f"{self.numero_factura}", font="sans 14 bold", bg="gray")
+        self.label_numero_factura.place(x=950, y=11)
         
         #BOTONES
         boton_agregar = tk.Button(label_frame, text="Agregar articulo", font="sans 14 bold")
@@ -94,5 +186,4 @@ class Ventas(tk.Frame):
 
         boton_ver_ventas = tk.Button(self, text="Ver ventas realizadas", font="sans 14 bold")
         boton_ver_ventas.place(x=290, y=550, width=280, height=40)
-        
         
