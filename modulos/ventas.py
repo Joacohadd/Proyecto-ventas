@@ -382,7 +382,57 @@ class Ventas(tk.Frame):
             factura_path = f"facturas/Factura_{self.numero_factura}.pdf"
             c = canvas.Canvas(factura_path, pagesize=letter)
 
-            
+            empresa_nombre ="Punto de venta V0.5"
+            empresa_direccion = "Calle 1 # 1a - 01"
+            empresa_telefono = "+54 123456789"
+            empresa_mail = "info@gmail.com"
+            empresa_web = "www.puntodeventa.com"
+
+            c.setFont("Helvetica-Bold", 18)
+            c.setFillColor(colors.darkblue)
+            c.drawCentredString(300, 750, "FACTURA DE SERVICIOS")
+
+            c.setFillColor(colors.black)
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(50, 710, f"{empresa_nombre}")
+            c.setFont("Helvetica", 12)
+            c.drawString(50, 690, f"Direccion: {empresa_direccion}")
+            c.drawString(50, 670, f"Telefono: {empresa_telefono}")
+            c.drawString(50, 650, f"Mail: {empresa_mail}")
+            c.drawString(50, 630, f"Website: {empresa_web}")
+
+            #DIBUJA LINEA HORIZONTAL SEPARADORA
+            c.setLineWidth(0.5)
+            c.setStrokeColor(colors.black)
+            c.line(50, 620, 550, 620)
+
+            #INFO FACTURA
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(50, 600, f"Numero factura: {self.numero_factura}")
+            c.drawString(50, 580, f"Fecha: {datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")}")
+
+            c.line(50, 560, 550, 560)
+
+            c.drawString(50, 540, f"Cliente: {cliente}")
+            c.drawString(50, 520, "Descripcion de productos: ")
+
+            #TABLA DENTRO DE FACTURA PA POSICIONAR
+            y_offset = 500
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(70, y_offset, "Producto")
+            c.drawString(270, y_offset, "Cantidad")
+            c.drawString(370, y_offset, "Precio")
+            c.drawString(470, y_offset, "Total")
+
+            c.line(50, y_offset - 10, 550, y_offset - 10)
+            y_offset -= 30
+            c.setFont("Helvetica", 12)
+            for item in self.productos_seleccionados:
+                factura, cliente, producto, precio, cantidad, total = item
+                c.drawString(70, y_offset, producto)
+                c.drawString(270, y_offset, str(cantidad))
+                c.drawString(370, y_offset, "$".format(precio))
+                c.drawString(470, y_offset, total)
 
 
 
