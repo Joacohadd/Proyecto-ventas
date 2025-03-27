@@ -203,6 +203,9 @@ class Ventas(tk.Frame):
                 c.execute("UPDATE articulos SET stock = stock - ? WHERE articulo = ?", (cantidad, producto))
 
             conn.commit()
+
+            self.facturas_pdf(total_ventas, cliente)
+
         except sqlite3.Error as e:
             messagebox.showerror("Error", f"Error al registrar la venta: {e}")
         
@@ -433,6 +436,34 @@ class Ventas(tk.Frame):
                 c.drawString(270, y_offset, str(cantidad))
                 c.drawString(370, y_offset, "$".format(precio))
                 c.drawString(470, y_offset, total)
+                y_offset -= 20
+
+            c.line(50, y_offset, 550, y_offset)
+            y_offset -= 20
+
+            #TOTAL A PAGAR EN FACTURA
+            c.setFont("Helvetica-Bold", 14)
+            c.setFillColor(colors.darkblue)
+            c.drawString(50, y_offset, f"Total a pagar: $   {total_venta}")
+            c.setFillColor(colors.black)
+            c.setFont("Helvetica", 12)
+
+            #FIN
+            y_offset -= 20
+            c.line(50, y_offset, 550, y_offset)
+
+            c.setFont("Helvetica-Bold", 16)
+            c.drawString(150, y_offset -60, "Gracias por su compra")
+
+            c.save()
+
+            messagebox.showinfo("Factura", f"Se genero la factura con exito en: {factura_path}")
+
+            #SE ABRE LA FACTURA AUTOMATICAMENTE 
+            os.startfile(os.path.abspath(factura_path))
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al generar la factura: {e}")
 
 
 
