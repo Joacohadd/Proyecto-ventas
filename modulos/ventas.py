@@ -20,7 +20,10 @@ class Ventas(tk.Frame):
         self.productos_seleccionados = []
         self.widgets()
         self.cargar_productos()
+<<<<<<< HEAD
         self.cargar_clientes()
+=======
+>>>>>>> ba804d2ccfd34190b759dac977430893751e486b
         self.timer_producto = None
     
     def obtener_numero_factura_actual(self):
@@ -466,6 +469,12 @@ class Ventas(tk.Frame):
         except Exception as e:
             messagebox.showerror("Error", f"Error al generar la factura: {e}")
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> ba804d2ccfd34190b759dac977430893751e486b
     def widgets(self):
         #PRIMER RECTANGULO
         label_frame = tk.LabelFrame(self, font="sans 12 bold", bg="gray")
@@ -561,4 +570,7 @@ class Ventas(tk.Frame):
         boton_ver_ventas = tk.Button(self, text="Ver ventas realizadas", font="sans 14 bold", command=self.ver_ventas_realizadas)
         boton_ver_ventas.place(x=290, y=550, width=280, height=40)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ba804d2ccfd34190b759dac977430893751e486b
