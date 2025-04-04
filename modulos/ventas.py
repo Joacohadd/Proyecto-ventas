@@ -20,11 +20,10 @@ class Ventas(tk.Frame):
         self.productos_seleccionados = []
         self.widgets()
         self.cargar_productos()
-<<<<<<< HEAD
         self.cargar_clientes()
-=======
->>>>>>> ba804d2ccfd34190b759dac977430893751e486b
+        #MIENTRAS ESCRIBIS VA FILTRARNDO
         self.timer_producto = None
+        self.timer_clientes  = None
     
     def obtener_numero_factura_actual(self):
         #BASE DE DATOS
@@ -38,6 +37,40 @@ class Ventas(tk.Frame):
         except sqlite3.Error as e:
             print("Error obteniendo el numero de factura actual", e)
             return 1
+        
+    def cargar_clientes(self):
+        try:
+            with sqlite3.connect(self.db_name) as conn:
+                c = conn.cursor()
+                c.execute("SELECT nombre FROM clientes")
+                #Crea una lista que contiene el primer elemento de cada tupla de la base de datos.
+                clientes = c.fetchall()
+                self.clientes = [cliente[0] for cliente in clientes]
+                self.entry_cliente["values"] = self.clientes
+        except sqlite3.Error as e:
+            print("Error cargando los clientes: ", e)
+        
+    def fitrar_clientes(self, event = None):
+        if self.timer_clientes:
+            self.timer_clientes.cancel()
+        self.timer_clientes = threading.Timer(0.5, self._filter_clientes)
+        self.timer_clientes.start()
+    
+    def _filter_clientes(self):
+        typed = self.entry_cliente.get()
+
+        if typed == '':
+            data = self.clientes
+        else:
+            data = [item for item in self.clientes if typed.lower() in item.lower()]
+        
+        if data:
+            self.entry_cliente['values'] = data
+            self.entry_cliente.event_generate('<Down>')
+        else:
+            self.entry_cliente['values'] = ['No se encontraron resultados']
+            self.entry_cliente.event_generate('<Down>')
+            self.entry_cliente.delete(0, tk.END)
     
     def cargar_productos(self):
         try:
@@ -55,6 +88,7 @@ class Ventas(tk.Frame):
             self.timer_producto.cancel()
         self.timer_producto = threading.Timer(0.5, self._filter_products)
         self.timer_producto.start()
+        
     
     def _filter_products(self):
         typed = self.entry_producto.get()
@@ -65,7 +99,7 @@ class Ventas(tk.Frame):
             data = [item for item in self.products if typed.lower() in item.lower()]
         
         if data:
-            self.entry_producto['values'] == data
+            self.entry_producto['values'] = data
             self.entry_producto.event_generate('<Down>')
         else:
             self.entry_producto['values'] = ['No se encontraron resultados']
@@ -100,13 +134,14 @@ class Ventas(tk.Frame):
                 
                 if resultado is None:
                     messagebox.showerror("Error", "Producto no encontrado")
-                    producto
+                    return
                     
                 precio, stock = resultado
                 
                 #LO QUE VENDO TIENE QUE SER MENOR A LO QUE HAY EN STOCK
                 if cantidad > stock:
                     messagebox.showerror("Error", f"Stock insuficiente, solo hay {stock} unidades")
+                    return
                 
                 total = precio * cantidad
                 #El .0f para que no haya decimales
@@ -469,12 +504,6 @@ class Ventas(tk.Frame):
         except Exception as e:
             messagebox.showerror("Error", f"Error al generar la factura: {e}")
 
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> ba804d2ccfd34190b759dac977430893751e486b
     def widgets(self):
         #PRIMER RECTANGULO
         label_frame = tk.LabelFrame(self, font="sans 12 bold", bg="gray")
@@ -484,6 +513,7 @@ class Ventas(tk.Frame):
         label_cliente.place(x=10, y=11)
         self.entry_cliente = ttk.Combobox(label_frame, font="sans 14 bold")
         self.entry_cliente.place(x=120, y=8, width=260, height=40)
+        self.entry_cliente.bind('<KeyRelease>', self.fitrar_clientes)
         
         #SELECCIONAR PRODUCTO
         label_producto = tk.Label(label_frame, text="Producto: ", font="sans 14 bold", bg="gray")
@@ -570,7 +600,4 @@ class Ventas(tk.Frame):
         boton_ver_ventas = tk.Button(self, text="Ver ventas realizadas", font="sans 14 bold", command=self.ver_ventas_realizadas)
         boton_ver_ventas.place(x=290, y=550, width=280, height=40)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> ba804d2ccfd34190b759dac977430893751e486b
